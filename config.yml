@@ -1,0 +1,31 @@
+logging:
+  level: INFO
+  loggers:
+    com.example.projects: DEBUG
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 8082
+
+shards:
+  shards:
+    - driverClass: org.mariadb.jdbc.Driver
+      user: root
+      password:
+      url: jdbc:mariadb://localhost:3306/base_project_shard1
+      properties:
+        charSet: UTF-8
+        hibernate.dialect: org.hibernate.dialect.MySQLDialect
+    - driverClass: org.mariadb.jdbc.Driver
+      user: root
+      password:
+      url: jdbc:mariadb://localhost:3306/base_project_shard2
+      properties:
+        charSet: UTF-8
+        hibernate.dialect: org.hibernate.dialect.MySQLDialect
+
+swagger:
+  resourcePackage: com.example.projects.resource
+  title: Base Project
+  description: Base Project Swagger
