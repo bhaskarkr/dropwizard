@@ -137,7 +137,7 @@ public class CabServiceImpl implements CabService {
     }
 
     @Override
-    public boolean completeTrip(String id) throws Exception {
+    public boolean finishTrip(String id, RideStatus status) throws Exception {
         List<StoredRides> storedRides = ridesRepository.get(id, null, null);
         if(storedRides.isEmpty())
             throw BaseException.error(ErrorCode.NO_RESULT_FOUND, "Trip Doesn't Exists");
@@ -150,7 +150,7 @@ public class CabServiceImpl implements CabService {
             return storedRider;
         });
         return ridesRepository.update(id, storedRide -> {
-            storedRide.setStatus(RideStatus.DONE);
+            storedRide.setStatus(status);
             return storedRide;
         });
     }

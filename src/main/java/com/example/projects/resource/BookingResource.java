@@ -1,11 +1,10 @@
 package com.example.projects.resource;
 
+import com.example.projects.enums.RideStatus;
 import com.example.projects.model.Booking;
 import com.example.projects.model.Driver;
 import com.example.projects.model.request.CreateBookingRequest;
 import com.example.projects.service.CabService;
-import com.example.projects.storage.StoredDriver;
-import com.example.projects.storage.StoredRides;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.swagger.annotations.Api;
@@ -14,7 +13,6 @@ import io.swagger.annotations.ApiOperation;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
@@ -63,8 +61,14 @@ public class BookingResource {
     @GET
     @ApiOperation("Complete Trip")
     public boolean completetrip(@NotNull @QueryParam("driverId") String rideId) throws Exception{
-        return cabService.completeTrip(rideId);
+        return cabService.finishTrip(rideId, RideStatus.DONE);
     }
 
+    @Path("/cancel/{id}")
+    @GET
+    @ApiOperation("Cancel Trip")
+    public boolean cancelTrip(@NotNull @QueryParam("driverId") String rideId) throws Exception{
+        return cabService.finishTrip(rideId, RideStatus.CANCELLED);
+    }
 
 }

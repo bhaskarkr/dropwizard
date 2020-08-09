@@ -1,5 +1,6 @@
 package com.example.projects.service;
 
+import com.example.projects.enums.RideStatus;
 import com.example.projects.model.Booking;
 import com.example.projects.model.Driver;
 import com.example.projects.enums.DriverStatus;
@@ -32,5 +33,5 @@ public interface CabService {
 
     List<Booking> getBookingsForDriver(String driverId) throws Exception;
 
-    boolean completeTrip(String rideId) throws Exception;
+    boolean finishTrip(String rideId, RideStatus status) throws Exception;
 }
