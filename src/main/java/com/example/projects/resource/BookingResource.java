@@ -9,6 +9,7 @@ import com.example.projects.storage.StoredRides;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
@@ -31,12 +32,14 @@ public class BookingResource {
 
     @Path("/")
     @POST
+    @ApiOperation("Add booking")
     public Booking addBooking(CreateBookingRequest request) throws Exception{
         return cabService.addBooking(request);
     }
 
     @Path("/cabs")
     @POST
+    @ApiOperation("Get nearest cabs")
     public List<Driver> getNearestCabs(@NotNull @QueryParam("lat") Double lat,
                                        @NotNull @QueryParam("lng") Double lng) throws Exception{
         return cabService.getNearest(lat, lng);
@@ -44,12 +47,14 @@ public class BookingResource {
 
     @Path("/driver/{driverId}/list")
     @GET
+    @ApiOperation("Get Bookings for Driver")
     public List<Booking> getBookingsForDriver(@NotNull @QueryParam("driverId") String driverId) throws Exception{
         return cabService.getBookingsForDriver(driverId);
     }
 
     @Path("/rider/{riderId}/list")
     @GET
+    @ApiOperation("Get Bookings for Rider")
     public List<Booking> getBookingsForRider(@NotNull @QueryParam("driverId") String driverId) throws Exception{
         return cabService.getBookingsForRider(driverId);
     }

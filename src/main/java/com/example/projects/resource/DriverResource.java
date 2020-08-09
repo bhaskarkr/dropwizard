@@ -7,6 +7,7 @@ import com.example.projects.service.CabService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.jaxrs.PATCH;
 
 import javax.validation.Valid;
@@ -29,12 +30,14 @@ public class DriverResource {
 
     @POST
     @Path("/")
+    @ApiOperation("Add Driver")
     public Driver addDriver(@NotNull @Valid CreateDriverRequest request) throws Exception {
         return cabService.addDriver(request);
     }
 
     @GET
     @Path("/{id}")
+    @ApiOperation("Get Driver")
     public Driver getDriver(@PathParam("id") String id,
                                   @QueryParam("allowInactive")@DefaultValue("false") boolean allowInactive,
                                   @QueryParam("status") DriverStatus status) throws Exception {
@@ -43,6 +46,7 @@ public class DriverResource {
 
     @PATCH
     @Path("/{id}/{lat}/{lng}")
+    @ApiOperation("Update Driver location")
     public boolean updateDriverLocation(@PathParam("id") String id,
                                         @QueryParam("lat") Double lat,
                                         @QueryParam("lng") Double lng) throws Exception {
@@ -51,6 +55,7 @@ public class DriverResource {
 
     @PATCH
     @Path("/{id}/{status}")
+    @ApiOperation("update Driver Status")
     public boolean updateDriverStatus(@PathParam("id") String id,
                                       @QueryParam("status") DriverStatus status) throws Exception {
         return cabService.updateDriverStatus(id, status);
