@@ -2,9 +2,12 @@ package com.example.projects.service.Impl;
 
 import com.example.projects.core.BaseException;
 import com.example.projects.core.ErrorCode;
+import com.example.projects.enums.RiderStatus;
+import com.example.projects.model.Booking;
 import com.example.projects.model.Driver;
-import com.example.projects.model.DriverStatus;
+import com.example.projects.enums.DriverStatus;
 import com.example.projects.model.Rider;
+import com.example.projects.model.request.CreateBookingRequest;
 import com.example.projects.model.request.CreateDriverRequest;
 import com.example.projects.model.request.CreateRiderRequest;
 import com.example.projects.repository.DriverRepository;
@@ -13,11 +16,14 @@ import com.example.projects.repository.RidesRepository;
 import com.example.projects.service.CabService;
 import com.example.projects.storage.StoredDriver;
 import com.example.projects.storage.StoredRider;
+import com.example.projects.storage.StoredRides;
 import com.example.projects.util.CabUtils;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Singleton
 public class CabServiceImpl implements CabService {
@@ -85,9 +91,46 @@ public class CabServiceImpl implements CabService {
     public Rider getRider(String id, boolean allowInactive) throws Exception {
         Optional<StoredRider> storedRider = riderRepository.get(id, allowInactive);
         if(!storedRider.isPresent())
-            throw BaseException.error(ErrorCode.NO_RESULT_FOUND, "Driver Doesn't Exists");
+            throw BaseException.error(ErrorCode.NO_RESULT_FOUND, "User Doesn't Exists");
         return CabUtils.toDto(storedRider.get());
     }
 
+    @Override
+    public List<Driver> getNearest(Double lat, Double lng) throws Exception {
+        return driverRepository.getNearest(lat, lng).stream().map(CabUtils::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public Booking addBooking(CreateBookingRequest bookingRequest) throws Exception {
+        Optional<StoredRider> rider = riderRepository.get(bookingRequest.getRiderId(), false);
+        if(!rider.isPresent())
+            throw BaseException.error(ErrorCode.INVALID_REQUEST, "User Doesn't Exists");
+        if(rider.get().getStatus() == RiderStatus.ONGOING)
+            throw BaseException.error(ErrorCode.TRIP_ALREADY_INPROGRESS, "User's trip already in progress");
+        Optional<StoredDriver> driver = driverRepository.get(bookingRequest.getDriverId(), false, DriverStatus.IDLE);
+        if(!rider.isPresent())
+            throw BaseException.error(ErrorCode.INVALID_REQUEST, "Driver Doesn't Exists");
+        return CabUtils.toDto(ridesRepository.save(CabUtils.toDao(bookingRequest, rider.get(), driver.get())).get());
+    }
+
+    @Override
+    public List<Booking> getBookingsForRider(String riderId) throws Exception {
+        Optional<StoredRider> storedRider = riderRepository.get(riderId, false);
+        if(!storedRider.isPresent())
+            throw BaseException.error(ErrorCode.NO_RESULT_FOUND, "User Doesn't Exists");
+        return ridesRepository.get(null, storedRider.get(), null).stream().map(CabUtils::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Booking>  getBookingsForDriver(String driverId) throws Exception {
+        Optional<StoredDriver> storedDriver = driverRepository.get(driverId, false, null);
+        if(!storedDriver.isPresent())
+            throw BaseException.error(ErrorCode.NO_RESULT_FOUND, "Driver Doesn't Exists");
+        return ridesRepository.get(null, null, storedDriver.get()).stream().map(CabUtils::toDto).collect(Collectors.toList());
+    }
+
+    private List<Driver> sortByDistance(List<Driver> drivers) {
+        return drivers;
+    }
 
 }

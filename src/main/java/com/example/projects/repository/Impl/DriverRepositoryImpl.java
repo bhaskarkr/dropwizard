@@ -1,8 +1,7 @@
 package com.example.projects.repository.Impl;
 
-import com.example.projects.model.DriverStatus;
+import com.example.projects.enums.DriverStatus;
 import com.example.projects.repository.DriverRepository;
-import com.example.projects.storage.StoredBase;
 import com.example.projects.storage.StoredDriver;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -10,8 +9,11 @@ import io.dropwizard.sharding.dao.RelationalDao;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
+
+import static com.example.projects.constant.CabConstants.SHARDING_KEY;
 
 @Singleton
 public class DriverRepositoryImpl implements DriverRepository {
@@ -30,7 +32,7 @@ public class DriverRepositoryImpl implements DriverRepository {
             detachedCriteria.add(Restrictions.eq("active", true));
         if(status != null)
             detachedCriteria.add(Restrictions.eq("status", status));
-        return relationalDao.select(id, detachedCriteria).stream().findFirst();
+        return relationalDao.select(SHARDING_KEY, detachedCriteria).stream().findFirst();
     }
 
     @Override
@@ -43,12 +45,23 @@ public class DriverRepositoryImpl implements DriverRepository {
 
     @Override
     public Optional<StoredDriver> save(StoredDriver storedDriver) throws Exception {
-        return relationalDao.save(storedDriver.getId(), storedDriver);
+        return relationalDao.save(SHARDING_KEY, storedDriver);
     }
 
     @Override
     public boolean update(String id, UnaryOperator<StoredDriver> driverUnaryOperator) {
-        return relationalDao.update(id, id, driverUnaryOperator);
+        return relationalDao.update(SHARDING_KEY, id, driverUnaryOperator);
+    }
+
+    @Override
+    public List<StoredDriver> getNearest(Double lat, Double lng) throws Exception {
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(StoredDriver.class)
+                .add(Restrictions.lt("lat", lat+10))
+                .add(Restrictions.gt("lat", lat-10))
+                .add(Restrictions.lt("lng", lng+10))
+                .add(Restrictions.gt("lng", lng-10))
+                .add(Restrictions.eq("status", DriverStatus.IDLE));
+        return relationalDao.scatterGather(detachedCriteria);
     }
 
 }

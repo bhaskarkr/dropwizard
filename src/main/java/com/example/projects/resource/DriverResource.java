@@ -1,10 +1,9 @@
 package com.example.projects.resource;
 
 import com.example.projects.model.Driver;
-import com.example.projects.model.DriverStatus;
+import com.example.projects.enums.DriverStatus;
 import com.example.projects.model.request.CreateDriverRequest;
 import com.example.projects.service.CabService;
-import com.example.projects.storage.StoredDriver;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.swagger.annotations.Api;
@@ -18,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/cab/driver")
-@Api("Driver Related Resources")
+@Api("Driver Related")
 public class DriverResource {
 
     private final CabService cabService;

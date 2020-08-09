@@ -1,13 +1,17 @@
 package com.example.projects.util;
 
+import com.example.projects.enums.RideStatus;
+import com.example.projects.model.Booking;
 import com.example.projects.model.Driver;
-import com.example.projects.model.DriverStatus;
+import com.example.projects.enums.DriverStatus;
 import com.example.projects.model.Rider;
-import com.example.projects.model.RiderStatus;
+import com.example.projects.enums.RiderStatus;
+import com.example.projects.model.request.CreateBookingRequest;
 import com.example.projects.model.request.CreateDriverRequest;
 import com.example.projects.model.request.CreateRiderRequest;
 import com.example.projects.storage.StoredDriver;
 import com.example.projects.storage.StoredRider;
+import com.example.projects.storage.StoredRides;
 import io.appform.dropwizard.discovery.bundle.id.IdGenerator;
 
 public interface CabUtils {
@@ -55,6 +59,31 @@ public interface CabUtils {
                 .name(storedRider.getName())
                 .phoneNumber(storedRider.getPhoneNumber())
                 .status(storedRider.getStatus())
+                .build();
+    }
+
+    static StoredRides toDao(CreateBookingRequest request, StoredRider rider, StoredDriver driver) {
+        return StoredRides.builder()
+                .id(IdGenerator.generate("U").getId())
+                .driver(driver)
+                .rider(rider)
+                .status(RideStatus.ACTIVE)
+                .pickLat(request.getPickLat())
+                .pickLng(request.getPickLng())
+                .dropLat(request.getDropLat())
+                .dropLng(request.getDropLng())
+                .build();
+    }
+
+    static Booking toDto(StoredRides storedRides) {
+        return Booking.builder()
+                .driver(toDto(storedRides.getDriver()))
+                .rider(toDto(storedRides.getRider()))
+                .pickLat(storedRides.getPickLat())
+                .pickLng(storedRides.getPickLng())
+                .dropLat(storedRides.getDropLat())
+                .dropLng(storedRides.getDropLng())
+                .status(storedRides.getStatus())
                 .build();
     }
 

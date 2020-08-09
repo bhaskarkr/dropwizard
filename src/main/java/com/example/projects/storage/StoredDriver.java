@@ -1,6 +1,6 @@
 package com.example.projects.storage;
 
-import com.example.projects.model.DriverStatus;
+import com.example.projects.enums.DriverStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

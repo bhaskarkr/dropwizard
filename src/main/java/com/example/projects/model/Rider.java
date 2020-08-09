@@ -1,5 +1,6 @@
 package com.example.projects.model;
 
+import com.example.projects.enums.RiderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

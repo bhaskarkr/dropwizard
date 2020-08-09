@@ -1,12 +1,10 @@
 package com.example.projects.storage;
 
-import com.example.projects.model.DriverStatus;
-import com.example.projects.model.RiderStatus;
+import com.example.projects.enums.RideStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -53,6 +51,6 @@ public class StoredRides {
     private Double dropLng;
 
     @Column(name = "status", nullable = false)
-    private RiderStatus status;
+    private RideStatus status;
 
 }

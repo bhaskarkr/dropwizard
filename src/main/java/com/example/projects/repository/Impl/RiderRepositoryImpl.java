@@ -13,6 +13,8 @@ import org.hibernate.criterion.Restrictions;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
+import static com.example.projects.constant.CabConstants.SHARDING_KEY;
+
 @Singleton
 public class RiderRepositoryImpl implements RiderRepository {
 
@@ -29,17 +31,17 @@ public class RiderRepositoryImpl implements RiderRepository {
         detachedCriteria.add(Restrictions.eq("id", id));
         if(!allowInactive)
             detachedCriteria.add(Restrictions.eq("active", true));
-        return relationalDao.select(id, detachedCriteria).stream().findFirst();
+        return relationalDao.select(SHARDING_KEY, detachedCriteria).stream().findFirst();
     }
 
     @Override
     public Optional<StoredRider> save(StoredRider storedRider) throws Exception {
-        return relationalDao.save(storedRider.getId(), storedRider);
+        return relationalDao.save(SHARDING_KEY, storedRider);
     }
 
     @Override
     public boolean update(String id, UnaryOperator<StoredRider> storedRiderUnaryOperator) {
-        return relationalDao.update(id, id, storedRiderUnaryOperator);
+        return relationalDao.update(SHARDING_KEY, id, storedRiderUnaryOperator);
     }
 
     @Override

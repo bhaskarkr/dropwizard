@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/cab/rider")
-@Api("Rider Related Resources")
+@Api("Rider Related")
 public class RiderResource {
 
     private final CabService cabService;

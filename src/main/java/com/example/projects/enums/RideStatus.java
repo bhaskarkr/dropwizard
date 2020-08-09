@@ -1,4 +1,4 @@
-package com.example.projects.model;
+package com.example.projects.enums;
 
 public enum RideStatus {
 
