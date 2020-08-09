@@ -13,6 +13,7 @@ import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 import static com.example.projects.constant.CabConstants.SHARDING_KEY;
 
@@ -41,6 +42,11 @@ public class RidesRepositoryImpl implements RidesRepository {
     @Override
     public Optional<StoredRides> save(StoredRides storedRides) throws Exception {
         return relationalDao.save(SHARDING_KEY, storedRides);
+    }
+
+    @Override
+    public boolean update(String id, UnaryOperator<StoredRides> storedRidesUnaryOperator) throws Exception {
+        return relationalDao.update(SHARDING_KEY, id, storedRidesUnaryOperator);
     }
 
 }

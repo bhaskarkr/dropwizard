@@ -31,4 +31,6 @@ public interface CabService {
     List<Booking> getBookingsForRider(String riderId) throws Exception;
 
     List<Booking> getBookingsForDriver(String driverId) throws Exception;
+
+    boolean completeTrip(String rideId) throws Exception;
 }

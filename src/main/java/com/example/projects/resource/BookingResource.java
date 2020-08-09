@@ -59,4 +59,12 @@ public class BookingResource {
         return cabService.getBookingsForRider(driverId);
     }
 
+    @Path("/complete/{id}")
+    @GET
+    @ApiOperation("Complete Trip")
+    public boolean completetrip(@NotNull @QueryParam("driverId") String rideId) throws Exception{
+        return cabService.completeTrip(rideId);
+    }
+
+
 }

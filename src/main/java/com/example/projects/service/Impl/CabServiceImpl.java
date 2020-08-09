@@ -2,6 +2,7 @@ package com.example.projects.service.Impl;
 
 import com.example.projects.core.BaseException;
 import com.example.projects.core.ErrorCode;
+import com.example.projects.enums.RideStatus;
 import com.example.projects.enums.RiderStatus;
 import com.example.projects.model.Booking;
 import com.example.projects.model.Driver;
@@ -26,6 +27,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.example.projects.enums.RiderStatus.IDLE;
 
 @Singleton
 public class CabServiceImpl implements CabService {
@@ -112,6 +115,8 @@ public class CabServiceImpl implements CabService {
         Optional<StoredDriver> driver = driverRepository.get(bookingRequest.getDriverId(), false, DriverStatus.IDLE);
         if(!driver.isPresent())
             throw BaseException.error(ErrorCode.INVALID_REQUEST, "Driver Doesn't Exists");
+        rider.get().setStatus(RiderStatus.ONGOING);
+        driver.get().setStatus(DriverStatus.BOOKED);
         return CabUtils.toDto(ridesRepository.save(CabUtils.toDao(bookingRequest, rider.get(), driver.get())).get());
     }
 
@@ -131,8 +136,27 @@ public class CabServiceImpl implements CabService {
         return ridesRepository.get(null, null, storedDriver.get()).stream().map(CabUtils::toDto).collect(Collectors.toList());
     }
 
+    @Override
+    public boolean completeTrip(String id) throws Exception {
+        List<StoredRides> storedRides = ridesRepository.get(id, null, null);
+        if(storedRides.isEmpty())
+            throw BaseException.error(ErrorCode.NO_RESULT_FOUND, "Trip Doesn't Exists");
+        driverRepository.update(storedRides.get(0).getDriver().getId(), storedDriver -> {
+            storedDriver.setStatus(DriverStatus.IDLE);
+            return storedDriver;
+        });
+        riderRepository.update(storedRides.get(0).getRider().getId(), storedRider -> {
+            storedRider.setStatus(IDLE);
+            return storedRider;
+        });
+        return ridesRepository.update(id, storedRide -> {
+            storedRide.setStatus(RideStatus.DONE);
+            return storedRide;
+        });
+    }
+
     private List<Driver> sortByDistance(List<Driver> drivers, Double lat, Double lng) {
-        if(drivers.size() < 10)
+        if(drivers.size() < 4)
             return drivers;
         Collections.sort(drivers, new Comparator<Driver>()
         {
