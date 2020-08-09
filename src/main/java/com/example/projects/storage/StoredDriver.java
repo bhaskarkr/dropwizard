@@ -44,6 +44,7 @@ public class StoredDriver {
     private Double lng;
 
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private DriverStatus status;
 
     @Column(name = "active", nullable = false)

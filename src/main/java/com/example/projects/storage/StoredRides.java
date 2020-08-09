@@ -51,6 +51,7 @@ public class StoredRides {
     private Double dropLng;
 
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private RideStatus status;
 
 }

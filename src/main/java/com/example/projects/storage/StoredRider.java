@@ -29,6 +29,7 @@ public class StoredRider {
     private String phoneNumber;
 
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private RiderStatus status;
 
     @Column(name = "active", nullable = false)

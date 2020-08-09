@@ -40,7 +40,7 @@ public class DriverRepositoryImpl implements DriverRepository {
         DetachedCriteria detachedCriteria = DetachedCriteria.forClass(StoredDriver.class);
         if(phoneNumber != null)
             detachedCriteria.add(Restrictions.eq("phoneNumber", phoneNumber));
-        return relationalDao.scatterGather(detachedCriteria).stream().findFirst();
+        return relationalDao.select(SHARDING_KEY, detachedCriteria).stream().findFirst();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class DriverRepositoryImpl implements DriverRepository {
                 .add(Restrictions.lt("lng", lng+10))
                 .add(Restrictions.gt("lng", lng-10))
                 .add(Restrictions.eq("status", DriverStatus.IDLE));
-        return relationalDao.scatterGather(detachedCriteria);
+        return relationalDao.select(SHARDING_KEY, detachedCriteria, 0 , 100);
     }
 
 }

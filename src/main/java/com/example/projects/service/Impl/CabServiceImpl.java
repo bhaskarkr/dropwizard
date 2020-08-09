@@ -21,6 +21,8 @@ import com.example.projects.util.CabUtils;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -108,7 +110,7 @@ public class CabServiceImpl implements CabService {
         if(rider.get().getStatus() == RiderStatus.ONGOING)
             throw BaseException.error(ErrorCode.TRIP_ALREADY_INPROGRESS, "User's trip already in progress");
         Optional<StoredDriver> driver = driverRepository.get(bookingRequest.getDriverId(), false, DriverStatus.IDLE);
-        if(!rider.isPresent())
+        if(!driver.isPresent())
             throw BaseException.error(ErrorCode.INVALID_REQUEST, "Driver Doesn't Exists");
         return CabUtils.toDto(ridesRepository.save(CabUtils.toDao(bookingRequest, rider.get(), driver.get())).get());
     }
@@ -129,7 +131,18 @@ public class CabServiceImpl implements CabService {
         return ridesRepository.get(null, null, storedDriver.get()).stream().map(CabUtils::toDto).collect(Collectors.toList());
     }
 
-    private List<Driver> sortByDistance(List<Driver> drivers) {
+    private List<Driver> sortByDistance(List<Driver> drivers, Double lat, Double lng) {
+        if(drivers.size() < 10)
+            return drivers;
+        Collections.sort(drivers, new Comparator<Driver>()
+        {
+            @Override
+            public int compare(Driver o1, Driver o2) {
+                double p0 = Math.pow(o1.getLat()-lat, 2) + Math.pow(o1.getLng()-lng, 2);
+                double p1 = Math.pow(o2.getLat()-lat, 2) + Math.pow(o2.getLng()-lng, 2);
+                return Double.compare(p0, p1);
+            }
+        });
         return drivers;
     }
 

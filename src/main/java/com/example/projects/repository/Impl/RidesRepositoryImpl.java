@@ -35,7 +35,7 @@ public class RidesRepositoryImpl implements RidesRepository {
             detachedCriteria.add(Restrictions.eq("rider", rider));
         if(driver != null)
             detachedCriteria.add(Restrictions.eq("driver", driver));
-        return relationalDao.scatterGather(detachedCriteria);
+        return relationalDao.select(SHARDING_KEY, detachedCriteria);
     }
 
     @Override

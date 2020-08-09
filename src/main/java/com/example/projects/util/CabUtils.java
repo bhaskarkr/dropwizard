@@ -64,7 +64,7 @@ public interface CabUtils {
 
     static StoredRides toDao(CreateBookingRequest request, StoredRider rider, StoredDriver driver) {
         return StoredRides.builder()
-                .id(IdGenerator.generate("U").getId())
+                .id(IdGenerator.generate("R").getId())
                 .driver(driver)
                 .rider(rider)
                 .status(RideStatus.ACTIVE)
