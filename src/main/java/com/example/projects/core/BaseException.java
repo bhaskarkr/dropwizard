@@ -15,7 +15,7 @@ public class BaseException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
-    public static BaseException BaseException(ErrorCode errorCode, String message) {
+    public static BaseException error(ErrorCode errorCode, String message) {
         return new BaseException(errorCode, message);
     }
 }

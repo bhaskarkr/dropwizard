@@ -28,7 +28,6 @@ public class BaseRepositoryImpl implements BaseRepository {
             detachedCriteria.add(Restrictions.eq("active", true));
         }
         return storedBaseRelationalDao.select(id, detachedCriteria, 0, 1).stream().findFirst();
-//        return storedBaseRelationalDao.get(id, id);
     }
 
     @Override
