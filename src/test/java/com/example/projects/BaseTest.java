@@ -1,5 +1,6 @@
 package com.example.projects;
 
+import com.codahale.metrics.health.HealthCheckRegistry;
 import com.example.projects.repository.BaseRepository;
 import com.example.projects.repository.Impl.BaseRepositoryImpl;
 import com.example.projects.service.BaseService;
@@ -33,6 +34,7 @@ public abstract class BaseTest {
     private static final DBConfig dbConfig = new DBConfig();
     private static final JerseyEnvironment jerseyEnvironment = mock(JerseyEnvironment.class);
     private static final Environment environment = mock(Environment.class);
+    private static final HealthCheckRegistry healthChecks = mock(HealthCheckRegistry.class);
     private static final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
     private static final Bootstrap<?> bootstrap = mock(Bootstrap.class);
     //SERVICES
@@ -68,6 +70,7 @@ public abstract class BaseTest {
         when(jerseyEnvironment.getResourceConfig()).thenReturn(new DropwizardResourceConfig());
         when(environment.jersey()).thenReturn(jerseyEnvironment);
         when(environment.lifecycle()).thenReturn(lifecycleEnvironment);
+        when(environment.healthChecks()).thenReturn(healthChecks);
         shardingBundle.initialize(bootstrap);
         shardingBundle.initBundles(bootstrap);
         shardingBundle.runBundles(dbConfig, environment);
