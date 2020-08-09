@@ -30,13 +30,13 @@ public class DriverResource {
 
     @POST
     @Path("/")
-    public StoredDriver addDriver(@NotNull @Valid CreateDriverRequest request) throws Exception {
+    public Driver addDriver(@NotNull @Valid CreateDriverRequest request) throws Exception {
         return cabService.addDriver(request);
     }
 
     @GET
     @Path("/{id}")
-    public StoredDriver getDriver(@PathParam("id") String id,
+    public Driver getDriver(@PathParam("id") String id,
                                   @QueryParam("allowInactive")@DefaultValue("false") boolean allowInactive,
                                   @QueryParam("status") DriverStatus status) throws Exception {
         return cabService.getDriver(id, allowInactive, status);

@@ -9,13 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class Driver {
+public class Rider {
     private String id;
     private String name;
     private String phoneNumber;
-    private String vehicleNumber;
-    private Double lat;
-    private Double lng;
-    private DriverStatus status;
-    private Boolean active;
+    private boolean active;
+    private RiderStatus status;
 }

@@ -1,11 +1,8 @@
 package com.example.projects.resource;
 
-import com.example.projects.model.DriverStatus;
-import com.example.projects.model.request.CreateDriverRequest;
+import com.example.projects.model.Rider;
 import com.example.projects.model.request.CreateRiderRequest;
 import com.example.projects.service.CabService;
-import com.example.projects.storage.StoredDriver;
-import com.example.projects.storage.StoredRider;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.swagger.annotations.Api;
@@ -30,13 +27,13 @@ public class RiderResource {
 
     @POST
     @Path("/")
-    public StoredRider addRider(@NotNull @Valid CreateRiderRequest request) throws Exception {
+    public Rider addRider(@NotNull @Valid CreateRiderRequest request) throws Exception {
         return cabService.addRider(request);
     }
 
     @GET
     @Path("/{id}")
-    public StoredRider getRider(@PathParam("id") String id,
+    public Rider getRider(@PathParam("id") String id,
                                 @QueryParam("allowInactive")@DefaultValue("false") boolean allowInactive) throws Exception {
         return cabService.getRider(id, allowInactive);
     }
