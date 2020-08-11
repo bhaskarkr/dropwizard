@@ -8,12 +8,16 @@ import com.example.projects.util.MockGenerator;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import static com.example.projects.util.MockGenerator.getBillingConfig;
+@RunWith(MockitoJUnitRunner.class)
 public class BookingServiceImplTest extends BaseTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        bookingService = new BookingServiceImpl(bookingRepository);
+        bookingService = new BookingServiceImpl(bookingRepository, getBillingConfig());
         parkingService = new ParkingServiceImpl(parkingLotRepository);
     }
 
@@ -29,6 +33,6 @@ public class BookingServiceImplTest extends BaseTest {
         ParkingLot parking = parkingService.onboardParkingLot(MockGenerator.getParkingLotOnboardingRequest());
         Booking booking = bookingService.registerBooking(MockGenerator.getBookingRequest(parking.getId(), VehicleType.TWO_WHEELER));
         int cost = bookingService.finishBooking(booking.getBookingId());
-        Assert.assertTrue(cost > 0);
+        Assert.assertTrue(cost == 41);
     }
 }

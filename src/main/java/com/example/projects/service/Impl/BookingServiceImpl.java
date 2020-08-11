@@ -3,6 +3,7 @@ package com.example.projects.service.Impl;
 import com.example.projects.core.BaseException;
 import com.example.projects.core.ErrorCode;
 import com.example.projects.enums.VehicleType;
+import com.example.projects.model.BillingConfig;
 import com.example.projects.model.Booking;
 import com.example.projects.model.request.BookingRequest;
 import com.example.projects.repository.BookingRepository;
@@ -14,9 +15,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -25,17 +24,14 @@ import static com.example.projects.constants.BaseConstants.HOURS_PER_DAY;
 @Singleton
 public class BookingServiceImpl implements BookingService {
 
-    private static final ImmutableMap rateCard = ImmutableMap.of(
-            VehicleType.TWO_WHEELER, ImmutableList.of(10, 8, 5),
-            VehicleType.HATCH_BACK, ImmutableList.of(15, 12, 10),
-            VehicleType.SUV, ImmutableList.of(20, 17, 15));
-    private static final ImmutableList hoursSplit = ImmutableList.of(2, 2, 100);
-
     private final BookingRepository bookingRepository;
+    private final BillingConfig billingConfig;
 
     @Inject
-    public BookingServiceImpl(BookingRepository bookingRepository) {
+    public BookingServiceImpl(BookingRepository bookingRepository,
+                              BillingConfig billingConfig) {
         this.bookingRepository = bookingRepository;
+        this.billingConfig = billingConfig;
     }
 
 
@@ -60,11 +56,12 @@ public class BookingServiceImpl implements BookingService {
         int cost = 0;
         int hours = 5 + calculateDurationInHours(storedBooking.get().getCreatedAt(), storedBooking.get().getUpdatedAt());
         int i = 0;
-        for(; hours > 0 && i < hoursSplit.size(); i++) {
-            cost += hours < (Integer)hoursSplit.get(i)
-                    ? hours * (Integer) ((ImmutableList)rateCard.get((VehicleType)storedBooking.get().getType())).get(i)
-                    : (Integer)hoursSplit.get(i) * (Integer)((ImmutableList)rateCard.get(storedBooking.get().getType())).get(i);
-            hours -= (int)hoursSplit.get(i);
+        for(; hours > 0 && i < billingConfig.getHourSplit().size(); i++) {
+            int costRate = billingConfig.getRateCard().get(storedBooking.get().getType()).get(i);
+            cost += hours < billingConfig.getHourSplit().get(i)
+                    ? hours * costRate
+                    : billingConfig.getHourSplit().get(i) * costRate;
+            hours -= billingConfig.getHourSplit().get(i);
         }
         return cost;
     }

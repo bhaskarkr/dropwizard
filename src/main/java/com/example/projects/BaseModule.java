@@ -1,5 +1,6 @@
 package com.example.projects;
 
+import com.example.projects.model.BillingConfig;
 import com.example.projects.repository.BaseRepository;
 import com.example.projects.repository.BookingRepository;
 import com.example.projects.repository.Impl.BaseRepositoryImpl;
@@ -57,5 +58,11 @@ public class BaseModule extends AbstractModule {
     @Singleton
     public RelationalDao<StoredBooking> bookingRelationalDao() {
         return createRelatedObjectDao(dbShardingBundle, StoredBooking.class);
+    }
+
+    @Provides
+    @Singleton
+    public BillingConfig getBillingConfig(BaseProjectConfiguration baseProjectConfiguration) {
+        return baseProjectConfiguration.getBillingConfig();
     }
 }

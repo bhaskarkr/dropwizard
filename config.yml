@@ -29,3 +29,22 @@ swagger:
   resourcePackage: com.example.projects.resource
   title: Base Project
   description: Base Project Swagger
+
+billingConfig:
+  rateCard:
+    TWO_WHEELER:
+      - 10
+      - 8
+      - 5
+    HATCH_BACK:
+      - 15
+      - 12
+      - 10
+    SUV:
+      - 20
+      - 17
+      - 15
+  hourSplit:
+    - 2
+    - 2
+    - 1000

@@ -1,5 +1,6 @@
 package com.example.projects;
 
+import com.example.projects.model.BillingConfig;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.dropwizard.Configuration;
 import io.dropwizard.sharding.config.ShardedHibernateFactory;
@@ -20,6 +21,5 @@ public class BaseProjectConfiguration extends Configuration {
 
     private ShardedHibernateFactory shards;
     private SwaggerBundleConfiguration swagger;
-
-
+    private BillingConfig billingConfig;
 }
