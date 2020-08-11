@@ -2,9 +2,19 @@ package com.example.projects;
 
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.example.projects.repository.BaseRepository;
+import com.example.projects.repository.BookingRepository;
 import com.example.projects.repository.Impl.BaseRepositoryImpl;
+import com.example.projects.repository.Impl.ParkingLotRepositoryImpl;
+import com.example.projects.repository.ParkingLotRepository;
 import com.example.projects.service.BaseService;
+import com.example.projects.service.BookingService;
+import com.example.projects.service.Impl.BaseServiceImpl;
+import com.example.projects.service.Impl.BookingServiceImpl;
+import com.example.projects.service.Impl.ParkingServiceImpl;
+import com.example.projects.service.ParkingService;
 import com.example.projects.storage.StoredBase;
+import com.example.projects.storage.StoredBooking;
+import com.example.projects.storage.StoredParkingLot;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import io.dropwizard.Configuration;
@@ -38,11 +48,17 @@ public abstract class BaseTest {
     private static final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
     private static final Bootstrap<?> bootstrap = mock(Bootstrap.class);
     //SERVICES
-    protected static BaseService baseService = mock(BaseService.class);
+    protected static BaseService baseService = mock(BaseServiceImpl.class);
+    protected static ParkingService parkingService = mock(ParkingServiceImpl.class);
+    protected static BookingService bookingService = mock(BookingServiceImpl.class);
     //REPOSITORIES
     protected static BaseRepository baseRepository;
+    protected static ParkingLotRepository parkingLotRepository;
+    protected static BookingRepository bookingRepository;
     protected static DBShardingBundle<DBConfig> shardingBundle = new DBShardingBundle<DBConfig>(
-            StoredBase.class
+            StoredBase.class,
+            StoredParkingLot.class,
+            StoredBooking.class
     ) {
         @Override
         protected ShardedHibernateFactory getConfig(DBConfig config) {
@@ -77,9 +93,12 @@ public abstract class BaseTest {
         shardingBundle.run(dbConfig, environment);
         //DAOs
         RelationalDao<StoredBase> storedBaseRelationalDao = DBShardingBundle.createRelatedObjectDao(shardingBundle, StoredBase.class);
-
+        RelationalDao<StoredParkingLot> storedParkingLotRelationalDao = DBShardingBundle.createRelatedObjectDao(shardingBundle, StoredParkingLot.class);
+        RelationalDao<StoredBooking> storedBookingRelationalDao = DBShardingBundle.createRelatedObjectDao(shardingBundle, StoredBooking.class);
         //ALL REPOSITORIES
         baseRepository = new BaseRepositoryImpl(storedBaseRelationalDao);
+        parkingLotRepository = new ParkingLotRepositoryImpl(storedParkingLotRelationalDao);
+
     }
 
     @AfterClass

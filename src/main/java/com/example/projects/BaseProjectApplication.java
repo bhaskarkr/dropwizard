@@ -2,6 +2,8 @@ package com.example.projects;
 
 import com.example.projects.core.BaseExceptionMapper;
 import com.example.projects.storage.StoredBase;
+import com.example.projects.storage.StoredBooking;
+import com.example.projects.storage.StoredParkingLot;
 import com.google.inject.Stage;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
@@ -29,7 +31,10 @@ public class BaseProjectApplication extends Application<BaseProjectConfiguration
 
     @Override
     public void initialize(final Bootstrap<BaseProjectConfiguration> bootstrap) {
-        this.dbShardingBundle = new DBShardingBundle<BaseProjectConfiguration>(StoredBase.class) {
+        this.dbShardingBundle = new DBShardingBundle<BaseProjectConfiguration>(
+                StoredBase.class,
+                StoredParkingLot.class,
+                StoredBooking.class) {
             @Override
             protected ShardedHibernateFactory getConfig(BaseProjectConfiguration baseProjectConfiguration) {
                 return baseProjectConfiguration.getShards();
