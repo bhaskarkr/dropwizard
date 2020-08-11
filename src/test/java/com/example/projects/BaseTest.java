@@ -4,6 +4,7 @@ import com.codahale.metrics.health.HealthCheckRegistry;
 import com.example.projects.repository.BaseRepository;
 import com.example.projects.repository.BookingRepository;
 import com.example.projects.repository.Impl.BaseRepositoryImpl;
+import com.example.projects.repository.Impl.BookingRepositoryImpl;
 import com.example.projects.repository.Impl.ParkingLotRepositoryImpl;
 import com.example.projects.repository.ParkingLotRepository;
 import com.example.projects.service.BaseService;
@@ -98,6 +99,7 @@ public abstract class BaseTest {
         //ALL REPOSITORIES
         baseRepository = new BaseRepositoryImpl(storedBaseRelationalDao);
         parkingLotRepository = new ParkingLotRepositoryImpl(storedParkingLotRelationalDao);
+        bookingRepository = new BookingRepositoryImpl(storedBookingRelationalDao);
 
     }
 

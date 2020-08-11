@@ -23,4 +23,12 @@ public class BookingServiceImplTest extends BaseTest {
         Booking booking = bookingService.registerBooking(MockGenerator.getBookingRequest(parking.getId(), VehicleType.TWO_WHEELER));
         Assert.assertTrue(booking.getParkingLotId().equals(parking.getId()));
     }
+
+    @Test
+    public void finishBooking() throws Exception{
+        ParkingLot parking = parkingService.onboardParkingLot(MockGenerator.getParkingLotOnboardingRequest());
+        Booking booking = bookingService.registerBooking(MockGenerator.getBookingRequest(parking.getId(), VehicleType.TWO_WHEELER));
+        int cost = bookingService.finishBooking(booking.getBookingId());
+        Assert.assertTrue(cost > 0);
+    }
 }

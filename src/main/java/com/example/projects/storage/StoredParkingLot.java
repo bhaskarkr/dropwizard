@@ -20,7 +20,7 @@ public class StoredParkingLot {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    private String Id;
+    private String id;
 
     @Column(name = "address", nullable = false)
     private String address;
