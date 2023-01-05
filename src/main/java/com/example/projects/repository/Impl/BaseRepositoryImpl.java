@@ -4,7 +4,7 @@ import com.example.projects.repository.BaseRepository;
 import com.example.projects.storage.StoredBase;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import io.dropwizard.sharding.dao.RelationalDao;
+import io.appform.dropwizard.sharding.dao.RelationalDao;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 

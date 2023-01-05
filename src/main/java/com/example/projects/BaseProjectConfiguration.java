@@ -2,7 +2,7 @@ package com.example.projects;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.dropwizard.Configuration;
-import io.dropwizard.sharding.config.ShardedHibernateFactory;
+import io.appform.dropwizard.sharding.config.ShardedHibernateFactory;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -8,10 +8,8 @@ import com.example.projects.storage.StoredBase;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import io.dropwizard.sharding.DBShardingBundle;
-import io.dropwizard.sharding.dao.RelationalDao;
-
-import static io.dropwizard.sharding.DBShardingBundle.createRelatedObjectDao;
+import io.appform.dropwizard.sharding.DBShardingBundle;
+import io.appform.dropwizard.sharding.dao.RelationalDao;
 
 public class BaseModule extends AbstractModule {
 
@@ -30,6 +28,6 @@ public class BaseModule extends AbstractModule {
     @Provides
     @Singleton
     public RelationalDao<StoredBase> baseRelationalDao() {
-        return createRelatedObjectDao(dbShardingBundle, StoredBase.class);
+        return dbShardingBundle.createRelatedObjectDao(StoredBase.class);
     }
 }
