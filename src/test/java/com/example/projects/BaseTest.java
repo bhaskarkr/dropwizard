@@ -76,7 +76,7 @@ public abstract class BaseTest {
         shardingBundle.runBundles(dbConfig, environment);
         shardingBundle.run(dbConfig, environment);
         //DAOs
-        RelationalDao<StoredBase> storedBaseRelationalDao = DBShardingBundle.createRelatedObjectDao(shardingBundle, StoredBase.class);
+        RelationalDao<StoredBase> storedBaseRelationalDao = shardingBundle.createRelatedObjectDao(StoredBase.class);
 
         //ALL REPOSITORIES
         baseRepository = new BaseRepositoryImpl(storedBaseRelationalDao);
