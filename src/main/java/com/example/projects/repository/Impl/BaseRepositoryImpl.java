@@ -2,37 +2,39 @@ package com.example.projects.repository.Impl;
 
 import com.example.projects.repository.BaseRepository;
 import com.example.projects.storage.StoredBase;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import io.appform.dropwizard.sharding.dao.RelationalDao;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Restrictions;
 
+import java.util.Date;
 import java.util.Optional;
-
-import static com.example.projects.constants.BaseConstants.SHARDING_KEY;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 public class BaseRepositoryImpl implements BaseRepository {
-    private final RelationalDao<StoredBase> storedBaseRelationalDao;
 
-    @Inject
-    public BaseRepositoryImpl(RelationalDao<StoredBase> storedBaseRelationalDao) {
-        this.storedBaseRelationalDao = storedBaseRelationalDao;
-    }
+    private final ConcurrentHashMap<String, StoredBase> store = new ConcurrentHashMap<>();
 
     @Override
     public Optional<StoredBase> get(String id, boolean allowInactive) throws Exception {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(StoredBase.class);
-        detachedCriteria.add(Restrictions.eq("id", id));
-        if(!allowInactive){
-            detachedCriteria.add(Restrictions.eq("active", true));
+        StoredBase stored = store.get(id);
+        if (stored == null) {
+            return Optional.empty();
         }
-        return storedBaseRelationalDao.select(SHARDING_KEY, detachedCriteria, 0, 1).stream().findFirst();
+        if (!allowInactive && !stored.isActive()) {
+            return Optional.empty();
+        }
+        return Optional.of(stored);
     }
 
     @Override
     public Optional<StoredBase> save(StoredBase storedBase) throws Exception {
-        return storedBaseRelationalDao.save(SHARDING_KEY, storedBase);
+        Date now = new Date();
+        if (store.containsKey(storedBase.getId())) {
+            storedBase.setUpdatedAt(now);
+        } else {
+            storedBase.setCreatedAt(now);
+            storedBase.setUpdatedAt(now);
+        }
+        store.put(storedBase.getId(), storedBase);
+        return Optional.of(storedBase);
     }
 }
